@@ -1,12 +1,9 @@
 import { Router } from 'express'
+import * as controllerUser from '../controllers/user'
 
 const router = Router()
 
-router.get('/', (_,res) => {
-
-    res.json({ message: 'Hello from Rebeca!' });
-    
-})
+router.post('/login', controllerUser.login)
 
 
 export { router }
