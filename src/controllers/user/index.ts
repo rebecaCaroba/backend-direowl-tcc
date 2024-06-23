@@ -1,9 +1,12 @@
 import { Request, Response } from 'express'
 import { MySQL } from '../../services/connection';
 import { FieldPacket, ResultSetHeader } from 'mysql2';
+import jwt from 'jsonwebtoken'
+import { config } from '../../services/jwt';
 
 interface UserType {
     id: number,
+    name: string,
     email: string,
     password: string,
 }
@@ -12,7 +15,6 @@ export async function login(req: Request, res: Response): Promise<Response> {
     const { email, password } = req.body;
 
     try {
-
         const mysql = await MySQL()
         const query = `SELECT * FROM users WHERE email = ? AND password = ?`
         const [result]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(query, [email, password])
@@ -23,9 +25,20 @@ export async function login(req: Request, res: Response): Promise<Response> {
             })
         }
 
-        return res.status(201).json({
-            result,
+        const token = jwt.sign({
+            userId: result[0].id
+        }, config.secret, {
+            expiresIn: config.expireIn
+        })
+
+        return res.status(200).json({
+            user: {
+                id: result[0].id,
+                name: result[0].name,
+                email: result[0].email
+            },
             message: 'Login realizado',
+            token: token
         })
 
     } catch (err) {
@@ -55,7 +68,7 @@ export async function register(req: Request, res: Response): Promise<Response> {
 
         await mysql.end()
 
-        if(!result) {
+        if (!result) {
             return res.status(501).json({
                 message: "Erro ao criar o usuário.",
             });
@@ -70,6 +83,10 @@ export async function register(req: Request, res: Response): Promise<Response> {
         });
 
     } catch (err) {
-        return res.status(500).json({ message: 'Erro interno do servidor :(', err})
+        return res.status(500).json({ message: 'Erro interno do servidor :(', err })
     }
+}
+
+export async function checkAuth(req: Request, res: Response): Promise<Response> {
+    return res.json("autenticado")
 }
