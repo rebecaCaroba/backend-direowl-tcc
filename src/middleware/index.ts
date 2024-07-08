@@ -5,6 +5,7 @@ import { MySQL } from '../services/connection';
 
 export async function validateToken(req: Request, res: Response, next: NextFunction) {
     const tokenBearer = req.headers['authorization'];
+    console.log(req.headers)
 
     if (!tokenBearer) {
         return res.status(406).json({
@@ -21,8 +22,6 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
         const mysql = await MySQL();
         const query = 'SELECT * FROM users WHERE id = ?';
         const [result]: any = await mysql.execute(query, [userId]);
-
-        console.log(result)
 
         if (!(result.length > 0)) {
             return res.status(406).json({

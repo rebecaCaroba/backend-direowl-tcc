@@ -26,6 +26,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
         }
 
         const token = jwt.sign({
+            userName: result[0].name,
             userId: result[0].id
         }, config.secret, {
             expiresIn: config.expireIn
