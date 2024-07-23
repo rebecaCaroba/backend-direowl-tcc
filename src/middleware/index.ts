@@ -5,7 +5,6 @@ import { MySQL } from '../services/connection';
 
 export async function validateToken(req: Request, res: Response, next: NextFunction) {
     const tokenBearer = req.headers['authorization'];
-    console.log(req.headers)
 
     if (!tokenBearer) {
         return res.status(406).json({
@@ -15,7 +14,6 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
     }
 
     const token = tokenBearer.split(' ')[1]; 
-    
     try {
         const { userId } = verify(token, config.secret) as JwtPayload;
 

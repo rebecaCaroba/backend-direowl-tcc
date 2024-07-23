@@ -44,3 +44,33 @@ export async function createCatalog(req: Request, res: Response): Promise<Respon
         })
     }
 }
+
+export async function getCatalog(req: Request, res: Response): Promise<Response> {
+    
+    try {
+        const mysql = await MySQL()
+
+        const query = "SELECT id, name FROM catalogs"
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query)
+
+        await mysql.end()
+        
+        if (!result) {
+            return res.status(501).json({
+                message: "Nenhum catálogo encontrado.",
+            });
+        }
+
+        return res.status(201).json({
+            message: "Catálogos obtidos com sucesso.",
+            result
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao obter os catálogos :(',
+            err
+        })
+    }
+}
