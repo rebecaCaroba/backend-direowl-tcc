@@ -14,6 +14,7 @@ router.get('/checkauth', middlewareUser.validateToken, controllerUser.checkAuth)
 // Catálogo
 router.post('/create-catalog', middlewareUser.validateToken, controllerCatalog.createCatalog )
 router.get('/get-catalog', middlewareUser.validateToken, controllerCatalog.getCatalog )
+router.get('/get-catalog-and-books', controllerCatalog.getCatalogAndBooks )
 
 // Livros
 

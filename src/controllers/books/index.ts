@@ -9,7 +9,7 @@ interface ReqType {
     publishedDate: string,
     pages: number,
     description: string,
-    imageLink: string,
+    imageLinks: string,
     isbn10?: number | string
     isbn13?: number | string
     }
@@ -23,7 +23,7 @@ export async function addBook(req: Request, res: Response): Promise<Response> {
     try {
         const mysql = await MySQL()
 
-            const query = 'INSERT INTO books (catalog_id, isbn, title, author, publisher, publication_date, pages, description, imageslink) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            const query = 'INSERT INTO books (catalog_id, isbn, title, author, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
             const [result] = await mysql.execute(query, [
                 CatalogSelect,
                 book.isbn13,
@@ -33,7 +33,7 @@ export async function addBook(req: Request, res: Response): Promise<Response> {
                 book.publishedDate,
                 book.pages,
                 book.description,
-                book.imageLink,
+                book.imageLinks,
               ])
 
         return res.status(200).json({

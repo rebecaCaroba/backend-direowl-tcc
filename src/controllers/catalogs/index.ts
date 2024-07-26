@@ -74,3 +74,39 @@ export async function getCatalog(req: Request, res: Response): Promise<Response>
         })
     }
 }
+
+export async function getCatalogAndBooks(req: Request, res: Response): Promise<Response> {
+    
+    try {
+        const mysql = await MySQL()
+
+        const query = `
+            SELECT
+                catalogs.id,
+                catalogs.name,
+                books.imageLinks
+            FROM 
+                catalogs
+            INNER JOIN 
+                books
+            ON catalogs.id = books.catalog_id
+        `
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query)
+
+        await mysql.end()
+        
+        return res.status(201).json({
+            message: "Catálogos obtidos com sucesso.",
+            result
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao obter os catálogos :(',
+            err
+        })
+    }
+}
+
+
