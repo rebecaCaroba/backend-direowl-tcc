@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { MySQL } from '../../services/connection';
 import { FieldPacket, ResultSetHeader } from 'mysql2';
+import { getIdUserToken } from '../../middleware';
 
 interface CatalogType {
     user_id: number,
@@ -8,7 +9,9 @@ interface CatalogType {
 }
 
 export async function createCatalog(req: Request, res: Response): Promise<Response> {
-    const { idUser, nameCatalog } = req.body;
+    const { nameCatalog } = req.body;
+
+    const idUser = await getIdUserToken(req)
 
     try {
         const mysql = await MySQL()
@@ -46,13 +49,14 @@ export async function createCatalog(req: Request, res: Response): Promise<Respon
 }
 
 export async function getCatalog(req: Request, res: Response): Promise<Response> {
-    
+    const idUser = await getIdUserToken(req)
+
     try {
         const mysql = await MySQL()
 
-        const query = "SELECT id, name FROM catalogs"
+        const query = "SELECT id, name FROM catalogs WHERE user_id = ?"
 
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query)
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
 
         await mysql.end()
         
@@ -76,7 +80,8 @@ export async function getCatalog(req: Request, res: Response): Promise<Response>
 }
 
 export async function getCatalogAndBooks(req: Request, res: Response): Promise<Response> {
-    
+    const idUser = await getIdUserToken(req)
+
     try {
         const mysql = await MySQL()
 
@@ -90,9 +95,10 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
             INNER JOIN 
                 books
             ON catalogs.id = books.catalog_id
+            WHERE catalogs.user_id = ?
         `
 
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query)
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
 
         await mysql.end()
         

@@ -9,11 +9,11 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
     if (!tokenBearer) {
         return res.status(406).json({
             error: true,
-            message: 'Não autorizado'    
+            message: 'Não autorizado'
         });
     }
 
-    const token = tokenBearer.split(' ')[1]; 
+    const token = tokenBearer.split(' ')[1];
     try {
         const { userId } = verify(token, config.secret) as JwtPayload;
 
@@ -29,11 +29,23 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
         }
 
         next();
-        
+
     } catch (err) {
         return res.status(406).json({
             error: true,
             message: 'O token está inválido'
         });
     }
+}
+
+export async function getIdUserToken(req: Request) {
+    const tokenBearer = req.headers['authorization'];
+
+    if (!tokenBearer) {
+        return null
+    }
+
+    const token = tokenBearer.split(' ')[1];
+    const { userId } = verify(token, config.secret) as JwtPayload;
+    return userId
 }
