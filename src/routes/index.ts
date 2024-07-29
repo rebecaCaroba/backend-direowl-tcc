@@ -10,11 +10,12 @@ const router = Router()
 router.post('/login', controllerUser.login, )
 router.post('/register', controllerUser.register)
 router.get('/checkauth', middlewareUser.validateToken, controllerUser.checkAuth)
+router.get('/get-user', middlewareUser.validateToken, controllerUser.getUser )
 
 // Catálogo
 router.post('/create-catalog', middlewareUser.validateToken, controllerCatalog.createCatalog )
 router.get('/get-catalog', middlewareUser.validateToken, controllerCatalog.getCatalog )
-router.post('/get-catalog-and-books', middlewareUser.validateToken, controllerCatalog.getCatalogAndBooks )
+router.get('/get-catalog-and-books', middlewareUser.validateToken, controllerCatalog.getCatalogAndBooks )
 
 // Livros
 

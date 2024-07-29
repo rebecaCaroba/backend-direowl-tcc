@@ -89,7 +89,8 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
             SELECT
                 catalogs.id,
                 catalogs.name,
-                books.imageLinks
+                books.imageLinks,
+                books.id
             FROM 
                 catalogs
             INNER JOIN 

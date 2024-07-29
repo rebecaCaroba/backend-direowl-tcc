@@ -4,7 +4,7 @@ import { config } from "../services/jwt";
 import { MySQL } from '../services/connection';
 
 export async function validateToken(req: Request, res: Response, next: NextFunction) {
-    const tokenBearer = req.headers['authorization'];
+    const tokenBearer = req.headers['authorization']
 
     if (!tokenBearer) {
         return res.status(406).json({

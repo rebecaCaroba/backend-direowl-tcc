@@ -3,6 +3,7 @@ import { MySQL } from '../../services/connection';
 import { FieldPacket, ResultSetHeader } from 'mysql2';
 import jwt from 'jsonwebtoken'
 import { config } from '../../services/jwt';
+import { getIdUserToken } from '../../middleware';
 
 interface UserType {
     id: number,
@@ -90,4 +91,34 @@ export async function register(req: Request, res: Response): Promise<Response> {
 
 export async function checkAuth(req: Request, res: Response): Promise<Response> {
     return res.json("autenticado")
+}
+
+
+export async function getUser(req: Request, res: Response): Promise<Response> {
+    const idUser = await getIdUserToken(req)
+
+    try {
+        const mysql = await MySQL()
+        const query = "SELECT * FROM users WHERE id = ?"
+
+        const [result]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(query, [idUser])
+
+        await mysql.end()
+
+        if(!result) {
+            return res.status(501).json({
+                message: "nenhum usuário encontrado :(",
+            })
+        }
+
+        return res.status(200).json({
+            user: {
+                name: result[0].name,
+                email: result[0].email,
+            }
+        })
+
+    } catch (err) {
+        return res.status(500).json({ message: 'Erro interno do servidor :(', err })
+    }
 }
