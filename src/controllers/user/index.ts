@@ -20,6 +20,8 @@ export async function login(req: Request, res: Response): Promise<Response> {
         const query = `SELECT * FROM users WHERE email = ? AND password = ?`
         const [result]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(query, [email, password])
 
+        await mysql.end()
+
         if (result.length < 1) {
             return res.status(400).json({
                 message: 'Email ou senha inválidos',
