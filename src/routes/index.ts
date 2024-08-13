@@ -24,5 +24,7 @@ router.get('/get-book/:bookId', controllerBooks.getBook)
 
 // Cronogrâma
 
-router.post('/create-timeline', middlewareUser.validateToken, controllerTimeline.createTimeline)
+router.post('/create-schedule', middlewareUser.validateToken, controllerTimeline.createTimeline)
+router.get('/get-schedule/:bookId', middlewareUser.validateToken, controllerTimeline.getTimeline)
+router.post('/completed-schedule', middlewareUser.validateToken, controllerTimeline.CompletedTimeline)
 export { router }
