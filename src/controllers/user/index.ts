@@ -25,6 +25,7 @@ export async function login(req: Request, res: Response): Promise<Response> {
         if (result.length < 1) {
             return res.status(400).json({
                 message: 'Email ou senha inválidos',
+                error: true,
             })
         }
 
@@ -42,13 +43,15 @@ export async function login(req: Request, res: Response): Promise<Response> {
                 email: result[0].email
             },
             message: 'Login realizado',
-            token: token
+            token: token,
+            error: false,
         })
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao tentar fazer o login :(',
-            err
+            err,
+            error: true,
         })
     }
 }
@@ -75,19 +78,25 @@ export async function register(req: Request, res: Response): Promise<Response> {
         if (!result) {
             return res.status(501).json({
                 message: "Erro ao criar o usuário.",
+                error: true,
             });
         }
 
 
         return res.status(201).json({
             message: "O usuário foi cadastrado com sucesso.",
+            error: false,
             user: {
                 username
             }
         });
 
     } catch (err) {
-        return res.status(500).json({ message: 'Erro interno do servidor :(', err })
+        return res.status(500).json({
+            message: 'Erro interno do servidor :(',
+            err,
+            error: true,
+        })
     }
 }
 
@@ -107,9 +116,10 @@ export async function getUser(req: Request, res: Response): Promise<Response> {
 
         await mysql.end()
 
-        if(!result) {
+        if (!result) {
             return res.status(501).json({
                 message: "nenhum usuário encontrado :(",
+                error: true,
             })
         }
 
@@ -117,10 +127,15 @@ export async function getUser(req: Request, res: Response): Promise<Response> {
             user: {
                 name: result[0].name,
                 email: result[0].email,
-            }
+            },
+            error: false,
         })
 
     } catch (err) {
-        return res.status(500).json({ message: 'Erro interno do servidor :(', err })
+        return res.status(500).json({ 
+            message: 'Erro interno do servidor :(',
+            err,
+            error: true,
+        })
     }
 }

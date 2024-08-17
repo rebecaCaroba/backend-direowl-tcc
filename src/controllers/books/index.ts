@@ -52,13 +52,15 @@ export async function addBook(req: Request, res: Response): Promise<Response> {
 
         return res.status(200).json({
             message: 'Livro adicionado com sucesso',
-            result,
+            error: false,
+            result
         })
 
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao adicionar o livro :(',
+            error: true,
             err
         })
     }
@@ -77,6 +79,7 @@ export async function getBook(req: Request, res: Response): Promise<Response> {
 
         return res.status(200).json({
             message: 'Livro encontrado com sucesso',
+            error: false,
             book: {
                 title: result[0].title,
                 author: result[0].author,
@@ -93,6 +96,7 @@ export async function getBook(req: Request, res: Response): Promise<Response> {
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu algum erro ao buscar o livro :(',
+            error: true,
             err
         })
     }

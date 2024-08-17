@@ -21,17 +21,22 @@ export async function createTimeline(req: Request, res: Response): Promise<Respo
         if (!result) {
             return res.status(501).json({
                 message: "Erro ao criar o cronogrâma literário.",
+                error: true,
+
             })
         }
 
         return res.status(201).json({
             message: "O cronogrâma literário foi criado com sucesso.",
+            error: false,
+
         })
 
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao tentar criar um cronogrâma :(',
+            error: true,
             err
         })
     }
@@ -54,17 +59,20 @@ export async function getTimeline(req: Request, res: Response): Promise<Response
         if (!result) {
             return res.status(501).json({
                 message: "Nenhum cronogrâma encontrado.",
+                error: true,
             });
         }
 
         return res.status(201).json({
             message: "Cronogrâma obtidos com sucesso.",
+            error: false,
             result
         });
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao obter o cronogrâma :(',
+            error: true,
             err
         })
     }
@@ -92,11 +100,13 @@ export async function CompletedTimeline(req: Request, res: Response): Promise<Re
         if (!result) {
             return res.status(501).json({
                 message: "Nenhum cronograma encontrado.",
+                 error: true,
             });
         }
         
         return res.status(201).json({
             message: "Cronograma atualizado com sucesso.",
+            error: false,
             result
         })
 
@@ -104,6 +114,7 @@ export async function CompletedTimeline(req: Request, res: Response): Promise<Re
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao atualizar o cronogrâma :(',
+            error: true,
             err
         })
     }

@@ -33,17 +33,21 @@ export async function createCatalog(req: Request, res: Response): Promise<Respon
         if (!result) {
             return res.status(501).json({
                 message: "Erro ao criar um catálogo.",
+                error: true
             });
         }
 
         return res.status(201).json({
             message: "O catálogo foi criado com sucesso.",
+            error: false
         });
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao tentar criar um catálogo :(',
-            err
+            err,
+            error: true
+
         })
     }
 }
@@ -63,17 +67,20 @@ export async function getCatalog(req: Request, res: Response): Promise<Response>
         if (!result) {
             return res.status(501).json({
                 message: "Nenhum catálogo encontrado.",
+                error: true
             });
         }
 
         return res.status(201).json({
             message: "Catálogos obtidos com sucesso.",
-            result
+            error: false,
+            result,
         });
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao obter os catálogos :(',
+            error: true,
             err
         })
     }
@@ -108,12 +115,14 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
 
         return res.status(201).json({
             message: "Catálogos obtidos com sucesso.",
+            error: false,
             result
         });
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao obter os catálogos :(',
+            error: true,
             err
         })
     }
@@ -136,12 +145,14 @@ export async function getBooksFromCatalog(req: Request, res: Response): Promise<
 
         return res.status(201).json({
             message: "Catálogos obtidos com sucesso.",
+            error: false,
             result
         });
 
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao obter os catálogos :(',
+            error: true,
             err
         })
     }
