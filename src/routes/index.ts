@@ -17,6 +17,8 @@ router.get('/get-user', middlewareUser.validateToken, controllerUser.getUser )
 router.post('/create-catalog', middlewareUser.validateToken, controllerCatalog.createCatalog )
 router.get('/get-catalog', middlewareUser.validateToken, controllerCatalog.getCatalog )
 router.get('/get-catalog-and-books', middlewareUser.validateToken, controllerCatalog.getCatalogAndBooks )
+router.get('/get-books-from-catalog/:catalogId', middlewareUser.validateToken, controllerCatalog.getBooksFromCatalog )
+
 
 // Livros
 router.post('/add-book', middlewareUser.validateToken, controllerBooks.addBook )

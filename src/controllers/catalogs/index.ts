@@ -29,7 +29,7 @@ export async function createCatalog(req: Request, res: Response): Promise<Respon
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser, nameCatalog])
 
         await mysql.end()
-        
+
         if (!result) {
             return res.status(501).json({
                 message: "Erro ao criar um catálogo.",
@@ -59,7 +59,7 @@ export async function getCatalog(req: Request, res: Response): Promise<Response>
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
 
         await mysql.end()
-        
+
         if (!result) {
             return res.status(501).json({
                 message: "Nenhum catálogo encontrado.",
@@ -87,22 +87,53 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
 
         const query = `
             SELECT
-                catalogs.id,
-                catalogs.name,
-                books.imageLinks,
-                books.id
+                catalogs.id AS catalog_id,
+                catalogs.name AS catalog_name,
+                books.imageLinks AS book_image,
+                books.id AS book_id
             FROM 
                 catalogs
             INNER JOIN 
                 books
-            ON catalogs.id = books.catalog_id
-            WHERE catalogs.user_id = ?
+            ON 
+                catalogs.id = books.catalog_id
+            WHERE 
+                catalogs.user_id = ?
+
         `
 
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
 
         await mysql.end()
-        
+
+        return res.status(201).json({
+            message: "Catálogos obtidos com sucesso.",
+            result
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao obter os catálogos :(',
+            err
+        })
+    }
+}
+
+
+
+export async function getBooksFromCatalog(req: Request, res: Response): Promise<Response> {
+    const { catalogId } = req.params
+    const idUser = await getIdUserToken(req)
+
+    try {
+        const mysql = await MySQL()
+
+        const query = `Select * from books WHERE catalog_id = ?`
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [catalogId])
+
+        await mysql.end()
+
         return res.status(201).json({
             message: "Catálogos obtidos com sucesso.",
             result
