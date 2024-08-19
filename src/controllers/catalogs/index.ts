@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { MySQL } from '../../services/connection';
 import { FieldPacket, ResultSetHeader } from 'mysql2';
 import { getIdUserToken } from '../../middleware';
+import { error } from 'console';
 
 interface CatalogType {
     user_id: number,
@@ -148,6 +149,42 @@ export async function getBooksFromCatalog(req: Request, res: Response): Promise<
             error: false,
             result
         });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao obter os catálogos :(',
+            error: true,
+            err
+        })
+    }
+}
+
+
+export async function PutDayRead(req: Request, res: Response): Promise<Response> {
+    const { catalogId, seconds, isRead, day } = req.body
+
+    try {
+
+        const mysql = await MySQL()
+
+        const query = 'INSERT INTO schedule (catalog_id, seconds, is_read, day) VALUES (?,?,?,?)'
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [catalogId, seconds, isRead, day])
+
+        await mysql.end()
+
+        // if(!result) {
+        //     res.status(501).json({
+        //         message: 'Error',
+        //     })
+    
+        // }
+
+        return res.status(200).json({
+            message: 'Dia concluido',
+            result
+        })
+
 
     } catch (err) {
         return res.status(500).json({

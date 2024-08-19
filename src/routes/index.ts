@@ -25,8 +25,8 @@ router.post('/add-book', middlewareUser.validateToken, controllerBooks.addBook )
 router.get('/get-book/:bookId', controllerBooks.getBook)
 
 // Cronogrâma
-
 router.post('/create-schedule', middlewareUser.validateToken, controllerTimeline.createTimeline)
 router.get('/get-schedule/:bookId', middlewareUser.validateToken, controllerTimeline.getTimeline)
 router.post('/completed-schedule', middlewareUser.validateToken, controllerTimeline.CompletedTimeline)
+router.post('/put-day-read', controllerCatalog.PutDayRead)
 export { router }
