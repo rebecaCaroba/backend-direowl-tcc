@@ -110,7 +110,7 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
                 catalogs.id = books.catalog_id
             WHERE 
                 catalogs.user_id = ?
-
+            LIMIT 5
         `
 
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
