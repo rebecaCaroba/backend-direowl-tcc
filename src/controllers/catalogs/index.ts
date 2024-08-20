@@ -23,7 +23,10 @@ export async function createCatalog(req: Request, res: Response): Promise<Respon
         if (catalogExist.length > 0) {
             await mysql.end()
 
-            return res.status(409).json({ message: 'Catálogo já existente', })
+            return res.status(409).json({ 
+                message: 'Catálogo já existente',
+                error: true
+             })
         }
 
         const query = `INSERT INTO catalogs (user_id, name) VALUES (?, ?)`
@@ -145,10 +148,9 @@ export async function getBooksFromCatalog(req: Request, res: Response): Promise<
         await mysql.end()
 
         return res.status(201).json({
-            message: "Catálogos obtidos com sucesso.",
             error: false,
             result
-        });
+        })
 
     } catch (err) {
         return res.status(500).json({

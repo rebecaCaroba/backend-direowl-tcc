@@ -12,6 +12,8 @@ router.post('/login', controllerUser.login, )
 router.post('/register', controllerUser.register)
 router.get('/checkauth', middlewareUser.validateToken, controllerUser.checkAuth)
 router.get('/get-user', middlewareUser.validateToken, controllerUser.getUser )
+router.patch('/update-username', middlewareUser.validateToken, controllerUser.updateUser)
+router.patch('/update-password', middlewareUser.validateToken, controllerUser.updatePassword)
 
 // Catálogo
 router.post('/create-catalog', middlewareUser.validateToken, controllerCatalog.createCatalog )

@@ -4,6 +4,7 @@ import { FieldPacket, ResultSetHeader } from 'mysql2';
 import jwt from 'jsonwebtoken'
 import { config } from '../../services/jwt';
 import { getIdUserToken } from '../../middleware';
+import { error } from 'console';
 
 interface UserType {
     id: number,
@@ -61,13 +62,16 @@ export async function register(req: Request, res: Response): Promise<Response> {
 
     try {
         const mysql = await MySQL()
-        const checkQuery = `SELECT * FROM users WHERE email = ?`
-        const [userExist]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(checkQuery, [email])
+        const checkQuery = `SELECT * FROM users WHERE email = ? OR name = ?`
+        const [userExist]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(checkQuery, [email, username])
 
         if (userExist.length > 0) {
             await mysql.end()
 
-            return res.status(409).json({ message: 'Usuário já cadastrado', })
+            return res.status(409).json({
+                message: 'O nome de usuário ou e-mail já está em uso',
+                error: true 
+            })
         }
 
         const query = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
@@ -128,6 +132,85 @@ export async function getUser(req: Request, res: Response): Promise<Response> {
                 name: result[0].name,
                 email: result[0].email,
             },
+            error: false,
+        })
+
+    } catch (err) {
+        return res.status(500).json({ 
+            message: 'Erro interno do servidor :(',
+            err,
+            error: true,
+        })
+    }
+}
+
+export async function updateUser(req: Request, res: Response): Promise<Response> {
+    const { newUsername } = req.body
+    const userId = await getIdUserToken(req)
+
+    try {
+        const mysql = await MySQL()
+        const checkQuery = `SELECT * FROM users WHERE name = ?`
+        const [userExist]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(checkQuery, [newUsername])
+
+        if (userExist.length > 0) {
+            await mysql.end()
+
+            return res.status(409).json({
+                message: 'Nome de usuário já está em uso. Por favor, use outro',
+                error: true
+            })
+        }
+
+        const query = "UPDATE users SET name = ? WHERE id = ?"
+
+        const [result]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(query, [newUsername, userId])
+
+        await mysql.end()
+
+        if (!result) {
+            return res.status(501).json({
+                message: "Não foi possível alterar o nome",
+                error: true,
+            })
+        }
+
+        return res.status(200).json({
+            message: "Nome alterado com sucesso",
+            error: false,
+        })
+
+    } catch (err) {
+        return res.status(500).json({ 
+            message: 'Erro interno do servidor :(',
+            err,
+            error: true,
+        })
+    }
+}
+
+export async function updatePassword(req: Request, res: Response): Promise<Response> {
+    const { password } = req.body
+
+    const userId = await getIdUserToken(req)
+
+    try {
+        const mysql = await MySQL()
+
+        const query = "UPDATE users SET password = ? WHERE id = ?"
+        const [result]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(query, [password, userId])
+
+        await mysql.end()
+
+        if (!result) {
+            return res.status(501).json({
+                message: "Não foi possível alterar a senha",
+                error: true,
+            })
+        }
+
+        return res.status(200).json({
+            message: "Senha alterada com sucesso",
             error: false,
         })
 
