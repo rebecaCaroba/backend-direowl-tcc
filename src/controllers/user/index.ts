@@ -150,18 +150,6 @@ export async function updateUser(req: Request, res: Response): Promise<Response>
 
     try {
         const mysql = await MySQL()
-        const checkQuery = `SELECT * FROM users WHERE name = ?`
-        const [userExist]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(checkQuery, [newUsername])
-
-        if (userExist.length > 0) {
-            await mysql.end()
-
-            return res.status(409).json({
-                message: 'Nome de usuário já está em uso. Por favor, use outro',
-                error: true
-            })
-        }
-
         const query = "UPDATE users SET name = ? WHERE id = ?"
 
         const [result]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(query, [newUsername, userId])

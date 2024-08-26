@@ -2,7 +2,7 @@ import { Router } from 'express'
 import * as controllerUser from '../controllers/user'
 import * as controllerCatalog from '../controllers/catalogs'
 import * as controllerBooks from '../controllers/books'
-import * as controllerTimeline from '../controllers/timeline'
+import * as controllerschedule from '../controllers/schedule'
 import * as middlewareUser from '../middleware'
 
 const router = Router()
@@ -27,8 +27,8 @@ router.post('/add-book', middlewareUser.validateToken, controllerBooks.addBook )
 router.get('/get-book/:bookId', controllerBooks.getBook)
 
 // Cronogrâma
-router.post('/create-schedule', middlewareUser.validateToken, controllerTimeline.createTimeline)
-router.get('/get-schedule/:bookId', middlewareUser.validateToken, controllerTimeline.getTimeline)
-router.post('/completed-schedule', middlewareUser.validateToken, controllerTimeline.CompletedTimeline)
+router.post('/create-schedule', middlewareUser.validateToken, controllerschedule.createSchedule)
+router.get('/get-schedule/:bookId', middlewareUser.validateToken, controllerschedule.getSchedule)
+router.post('/completed-schedule', middlewareUser.validateToken, controllerschedule.completedSchedule)
 router.post('/put-day-read', controllerCatalog.PutDayRead)
 export { router }

@@ -35,10 +35,9 @@ export async function addBook(req: Request, res: Response): Promise<Response> {
     try {
         const mysql = await MySQL()
 
-        const query = 'INSERT INTO books (catalog_id, isbn, title, author, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        const query = 'INSERT INTO books (catalog_id, title, author, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         const [result] = await mysql.execute(query, [
             CatalogSelect,
-            book.isbn13,
             book.title,
             book.authors.join(', '),
             book.publisher,
@@ -88,7 +87,6 @@ export async function getBook(req: Request, res: Response): Promise<Response> {
                 pages: result[0].pages,
                 description: result[0].description,
                 imageLinks: result[0].imageLinks,
-                isbn13: result[0].isbn13
             },
         })
 

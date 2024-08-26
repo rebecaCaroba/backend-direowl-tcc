@@ -17,8 +17,8 @@ export async function createCatalog(req: Request, res: Response): Promise<Respon
     try {
         const mysql = await MySQL()
 
-        const checkQuery = `SELECT * FROM catalogs WHERE name = ?`
-        const [catalogExist]: [ResultSetHeader & CatalogType[], FieldPacket[]] = await mysql.execute(checkQuery, [nameCatalog])
+        const checkQuery = `SELECT * FROM catalogs WHERE name = ? AND user_id = ?`
+        const [catalogExist]: [ResultSetHeader & CatalogType[], FieldPacket[]] = await mysql.execute(checkQuery, [nameCatalog, idUser])
 
         if (catalogExist.length > 0) {
             await mysql.end()

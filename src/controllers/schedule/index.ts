@@ -3,7 +3,7 @@ import { getIdUserToken } from "../../middleware";
 import { MySQL } from "../../services/connection";
 import { FieldPacket, ResultSetHeader } from 'mysql2';
 
-export async function createTimeline(req: Request, res: Response): Promise<Response> {
+export async function createSchedule(req: Request, res: Response): Promise<Response> {
     const { minutesDay, amoutPags, pagesDay, daysToRead, bookId } = req.body;
 
     const bookIdNumber = Number(bookId)
@@ -12,7 +12,7 @@ export async function createTimeline(req: Request, res: Response): Promise<Respo
     try {
         const mysql = await MySQL()
 
-        const query = `INSERT INTO timeline (book_id, user_id, total_days, pages_per_day, minutes_per_day,total_pages) VALUES (?, ?, ?, ?, ?, ?)`
+        const query = `INSERT INTO schedule (book_id, user_id, total_days, pages_per_day, minutes_per_day,total_pages) VALUES (?, ?, ?, ?, ?, ?)`
 
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [bookIdNumber, idUser, daysToRead, pagesDay, minutesDay, amoutPags])
 
@@ -42,7 +42,7 @@ export async function createTimeline(req: Request, res: Response): Promise<Respo
     }
 }
 
-export async function getTimeline(req: Request, res: Response): Promise<Response> {
+export async function getSchedule(req: Request, res: Response): Promise<Response> {
     const { bookId } = req.params;
 
     const idUser = await getIdUserToken(req)
@@ -50,7 +50,7 @@ export async function getTimeline(req: Request, res: Response): Promise<Response
     try {
         const mysql = await MySQL()
 
-        const query = "SELECT * FROM timeline WHERE user_id = ? AND book_id = ?"
+        const query = "SELECT * FROM schedule WHERE user_id = ? AND book_id = ?"
 
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser, bookId ])
 
@@ -78,7 +78,7 @@ export async function getTimeline(req: Request, res: Response): Promise<Response
     }
 }
 
-export async function CompletedTimeline(req: Request, res: Response): Promise<Response> {
+export async function completedSchedule(req: Request, res: Response): Promise<Response> {
     const { bookId, dayRead, timeInSeconds } = req.body;
     console.log(dayRead)
 
@@ -88,7 +88,7 @@ export async function CompletedTimeline(req: Request, res: Response): Promise<Re
         const mysql = await MySQL()
 
         const queryUpdate = `
-            UPDATE timeline 
+            UPDATE schedule 
             SET last_day_read = ?, seconds = ? 
             WHERE user_id = ? AND book_id = ?
         `
