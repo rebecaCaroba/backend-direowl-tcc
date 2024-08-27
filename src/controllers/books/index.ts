@@ -35,7 +35,7 @@ export async function addBook(req: Request, res: Response): Promise<Response> {
     try {
         const mysql = await MySQL()
 
-        const query = 'INSERT INTO books (catalog_id, title, author, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        const query = 'INSERT INTO books (catalog_id, title, author, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
         const [result] = await mysql.execute(query, [
             CatalogSelect,
             book.title,
