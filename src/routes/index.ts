@@ -28,8 +28,9 @@ router.get('/get-book/:bookId', controllerBooks.getBook)
 
 // Cronogrâma
 router.post('/create-schedule', middlewareUser.validateToken, controllerschedule.createSchedule)
-router.get('/get-schedule/:bookId', middlewareUser.validateToken, controllerschedule.getSchedule)
-router.post('/completed-day', middlewareUser.validateToken, controllerschedule.completedDay)
-router.post('/put-day-read', controllerCatalog.PutDayRead)
 router.post('/create-dayRead', controllerschedule.CreateDayRead)
+router.get('/get-schedule/:bookId', middlewareUser.validateToken, controllerschedule.getSchedule)
+router.patch('/completed-day', middlewareUser.validateToken, controllerschedule.completedDay)
+router.put('/completed-schedule', middlewareUser.validateToken, controllerschedule.completedDay)
+router.post('/put-day-read', controllerCatalog.PutDayRead)
 export { router }

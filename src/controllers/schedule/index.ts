@@ -30,7 +30,7 @@ export async function createSchedule(req: Request, res: Response): Promise<Respo
             message: "O cronogrâma literário foi criado com sucesso.",
             error: false,
             result: {
-                id: result.insertId, // O ID do cronograma
+                id: result.insertId, 
             }
         })
 
@@ -55,10 +55,9 @@ export async function getSchedule(req: Request, res: Response): Promise<Response
         const query = `
             SELECT 
                 schedule.id AS schedule_id,
-                schedule.minutes_per_day,
-                schedule.last_day_read,
-                schedule.total_days,
                 dayread.id AS dayread_id,
+                schedule.minutes_per_day,
+                schedule.total_days,
                 dayread.day,
                 dayread.seconds,
                 dayread.is_read
@@ -138,7 +137,6 @@ export async function CreateDayRead(req: Request, res: Response): Promise<Respon
 
 export async function completedDay(req: Request, res: Response): Promise<Response> {
     const { dayreadId, timeInSeconds, is_read } = req.body;
-    console.log(dayreadId, timeInSeconds, is_read)
 
     try {
         const mysql = await MySQL()
@@ -166,6 +164,42 @@ export async function completedDay(req: Request, res: Response): Promise<Respons
     } catch (err) {
         return res.status(500).json({
             message: 'Ocorreu um erro ao concluir um dia :(',
+            error: true,
+            err
+        })
+    }
+}
+
+
+export async function completeSchedule(req: Request, res: Response): Promise<Response> {
+    const { schedule_id, complete } = req.body;
+
+    try {
+        const mysql = await MySQL()
+
+        const query = 'UPDATE schedule SET complete = ? WHERE id = ?'
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [complete, schedule_id])
+
+        await mysql.end()
+
+        if (!result) {
+            return res.status(501).json({
+                message: "Erro ao concluir o cronograma",
+                error: true,
+            });
+        }
+
+        return res.status(201).json({
+            message: "Cronograma concluído com sucesso.",
+            error: false,
+            result
+        })
+
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao concluir o cronograma :(',
             error: true,
             err
         })
