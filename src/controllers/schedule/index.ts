@@ -4,7 +4,7 @@ import { MySQL } from "../../services/connection";
 import { FieldPacket, ResultSetHeader } from 'mysql2';
 
 export async function createSchedule(req: Request, res: Response): Promise<Response> {
-    const { minutesDay, amoutPags, pagesDay, daysToRead, bookId } = req.body;
+    const { minutesDay, amoutPags, totalMinutes, daysToRead, bookId } = req.body;
 
     const bookIdNumber = Number(bookId)
     const idUser = await getIdUserToken(req)
@@ -12,9 +12,9 @@ export async function createSchedule(req: Request, res: Response): Promise<Respo
     try {
         const mysql = await MySQL()
 
-        const query = `INSERT INTO schedule (book_id, user_id, total_days, pages_per_day, minutes_per_day,total_pages) VALUES (?, ?, ?, ?, ?, ?)`
+        const query = `INSERT INTO schedule (book_id, user_id, total_days, total_minutes, minutes_per_day, total_pages) VALUES (?, ?, ?, ?, ?, ?)`
 
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [bookIdNumber, idUser, daysToRead, pagesDay, minutesDay, amoutPags])
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [bookIdNumber, idUser, daysToRead, totalMinutes, minutesDay, amoutPags])
 
         await mysql.end()
 
@@ -58,6 +58,7 @@ export async function getSchedule(req: Request, res: Response): Promise<Response
                 dayread.id AS dayread_id,
                 schedule.minutes_per_day,
                 schedule.total_days,
+                schedule.total_minutes,
                 dayread.day,
                 dayread.seconds,
                 dayread.is_read
