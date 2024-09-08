@@ -23,10 +23,10 @@ export async function createCatalog(req: Request, res: Response): Promise<Respon
         if (catalogExist.length > 0) {
             await mysql.end()
 
-            return res.status(409).json({ 
+            return res.status(409).json({
                 message: 'Catálogo já existente',
                 error: true
-             })
+            })
         }
 
         const query = `INSERT INTO catalogs (user_id, name) VALUES (?, ?)`
@@ -91,12 +91,13 @@ export async function getCatalog(req: Request, res: Response): Promise<Response>
 }
 
 export async function getCatalogAndBooks(req: Request, res: Response): Promise<Response> {
+    const { search } = req.query;
     const idUser = await getIdUserToken(req)
 
     try {
         const mysql = await MySQL()
 
-        const query = `
+        let query = `
             SELECT
                 catalogs.id AS catalog_id,
                 catalogs.name AS catalog_name,
@@ -111,6 +112,29 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
             WHERE 
                 catalogs.user_id = ?
         `
+
+        if (search !== 'show') {
+            query += ` AND (catalogs.name LIKE ? OR books.title LIKE ? OR books.author LIKE ?)`;
+
+            const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser,
+                `%${search}%`, `%${search}%`, `%${search}%`]
+            )
+
+            await mysql.end()
+
+            if(!result) {
+                return res.status(201).json({
+                    message: "Parece que não tem nada aqui",
+                    error: true,
+                    result
+                })
+            }
+
+            return res.status(201).json({
+                error: false,
+                result
+            });
+        }
 
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
 
@@ -135,7 +159,6 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
 
 export async function getBooksFromCatalog(req: Request, res: Response): Promise<Response> {
     const { catalogId } = req.params
-    const idUser = await getIdUserToken(req)
 
     try {
         const mysql = await MySQL()
@@ -173,13 +196,6 @@ export async function PutDayRead(req: Request, res: Response): Promise<Response>
         const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [catalogId, seconds, isRead, day])
 
         await mysql.end()
-
-        // if(!result) {
-        //     res.status(501).json({
-        //         message: 'Error',
-        //     })
-    
-        // }
 
         return res.status(200).json({
             message: 'Dia concluido',

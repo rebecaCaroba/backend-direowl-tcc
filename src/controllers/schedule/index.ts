@@ -207,4 +207,57 @@ export async function completeSchedule(req: Request, res: Response): Promise<Res
     }
 }
 
+export async function getAllSchedule(req: Request, res: Response): Promise<Response> {
+    const idUser = await getIdUserToken(req)
+
+    try {
+        const mysql = await MySQL()
+
+        const query = `
+        SELECT 
+            schedule.id AS schedule_id,
+            schedule.user_id,
+            schedule.created_at,
+            schedule.complete,
+            books.id AS book_id,
+            books.title AS book_title,
+            books.imageLinks
+        FROM 
+            schedule
+        INNER JOIN 
+            books
+        ON 
+            schedule.book_id = books.id
+        WHERE 
+            schedule.user_id = ?
+    `
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
+
+        await mysql.end()
+
+        if (!result) {
+            return res.status(501).json({
+                message: "Erro ao buscar todos os cronogramas",
+                error: true,
+            });
+        }
+
+        return res.status(201).json({
+            message: "Cronogramas obtidos com sucesso.",
+            error: false,
+            result
+        })
+
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao buscar os cronogramas :(',
+            error: true,
+            err
+        })
+    }
+}
+
+
 
