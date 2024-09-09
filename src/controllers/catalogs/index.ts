@@ -212,4 +212,37 @@ export async function PutDayRead(req: Request, res: Response): Promise<Response>
     }
 }
 
+export async function deleteCatalog(req: Request, res: Response): Promise<Response> {
+    const { catalogId } = req.params
+
+    try {
+        const mysql = await MySQL()
+
+        const query = `DELETE FROM catalogs WHERE id = ?`
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [catalogId])
+
+        await mysql.end()
+
+        if(!result) {
+            return res.status(201).json({
+                message: 'Erro ao deletar o catálogo',
+                error: true,
+            })
+        }
+
+        return res.status(201).json({
+            message: 'Catálogo deletado com sucesso',
+            error: false,
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao deletar os catálogos :(',
+            error: true,
+            err
+        })
+    }
+}
+
 

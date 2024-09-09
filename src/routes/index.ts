@@ -20,6 +20,7 @@ router.post('/create-catalog', middlewareUser.validateToken, controllerCatalog.c
 router.get('/get-catalog', middlewareUser.validateToken, controllerCatalog.getCatalog )
 router.get('/get-catalog-and-books', middlewareUser.validateToken, controllerCatalog.getCatalogAndBooks )
 router.get('/get-books-from-catalog/:catalogId', middlewareUser.validateToken, controllerCatalog.getBooksFromCatalog )
+router.delete('/delete-catalog/:catalogId', middlewareUser.validateToken, controllerCatalog.deleteCatalog)
 
 
 // Livros
