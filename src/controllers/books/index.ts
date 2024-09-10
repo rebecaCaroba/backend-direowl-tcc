@@ -11,8 +11,7 @@ interface ReqType {
         pages: number,
         description: string,
         imageLinks: string,
-        isbn10?: number | string
-        isbn13?: number | string
+        isbn: number | string
     }
     CatalogSelect: number
 
@@ -26,20 +25,20 @@ interface BookType {
     pages: number,
     description: string,
     imageLinks: string,
-    isbn13?: number | string
+    isbn?: number | string
 }
 
 export async function addBook(req: Request, res: Response): Promise<Response> {
     const { book, CatalogSelect }: ReqType = req.body;
-
     try {
         const mysql = await MySQL()
 
-        const query = 'INSERT INTO books (catalog_id, title, author, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        const query = 'INSERT INTO books (catalog_id, title, author, isbn, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         const [result] = await mysql.execute(query, [
             CatalogSelect,
             book.title,
             book.authors.join(', '),
+            book.isbn,
             book.publisher,
             book.publishedDate,
             book.pages,

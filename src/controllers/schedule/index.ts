@@ -3,6 +3,15 @@ import { getIdUserToken } from "../../middleware";
 import { MySQL } from "../../services/connection";
 import { FieldPacket, ResultSetHeader } from 'mysql2';
 
+interface ScheduleType {
+    title: string,
+    author: string,
+    publisher: string,
+    pages: number,
+    description: string,
+    imageLinks: string
+}
+
 export async function createSchedule(req: Request, res: Response): Promise<Response> {
     const { minutesDay, amoutPags, totalMinutes, daysToRead, bookId } = req.body;
 
@@ -30,7 +39,7 @@ export async function createSchedule(req: Request, res: Response): Promise<Respo
             message: "O cronogrâma literário foi criado com sucesso.",
             error: false,
             result: {
-                id: result.insertId, 
+                id: result.insertId,
             }
         })
 
@@ -76,15 +85,15 @@ export async function getSchedule(req: Request, res: Response): Promise<Response
                 schedule.id, dayread.day;
         `
 
-        const [result] = await mysql.execute(query, [bookId, idUser])
+        const [result]: [ResultSetHeader & ScheduleType[], FieldPacket[]] = await mysql.execute(query, [bookId, idUser])
 
         await mysql.end()
 
-        if (!result) {
+        if (result.length <= 0) {
             return res.status(501).json({
                 message: "Nenhum cronogrâma encontrado.",
                 error: true,
-            });
+            })
         }
 
         return res.status(201).json({
@@ -110,7 +119,7 @@ export async function CreateDayRead(req: Request, res: Response): Promise<Respon
 
         const query = "INSERT INTO dayread ( schedule_id, seconds, is_read, day ) VALUES(?,?,?,?)"
 
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [schedule_id, seconds, is_read,  day])
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [schedule_id, seconds, is_read, day])
 
         await mysql.end()
 

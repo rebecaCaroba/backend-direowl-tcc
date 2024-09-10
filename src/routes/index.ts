@@ -4,6 +4,7 @@ import * as controllerCatalog from '../controllers/catalogs'
 import * as controllerBooks from '../controllers/books'
 import * as controllerSchedule from '../controllers/schedule'
 import * as middlewareUser from '../middleware'
+import * as middlewareBook from '../middleware/books'
 
 const router = Router()
 
@@ -24,7 +25,7 @@ router.delete('/delete-catalog/:catalogId', middlewareUser.validateToken, contro
 
 
 // Livros
-router.post('/add-book', middlewareUser.validateToken, controllerBooks.addBook )
+router.post('/add-book', middlewareUser.validateToken, middlewareBook.verifyBook, controllerBooks.addBook )
 router.get('/get-book/:bookId', controllerBooks.getBook)
 
 // Cronogrâma
