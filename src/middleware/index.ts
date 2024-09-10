@@ -21,15 +21,16 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
         const query = 'SELECT * FROM users WHERE id = ?';
         const [result]: any = await mysql.execute(query, [userId]);
 
+        await mysql.end()
+        
         if (!(result.length > 0)) {
             return res.status(406).json({
                 error: true,
                 message: 'O token está inválido'
-            });
+            })
         }
 
         next();
-
     } catch (err) {
         return res.status(406).json({
             error: true,
