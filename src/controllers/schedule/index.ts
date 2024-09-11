@@ -183,6 +183,7 @@ export async function completedDay(req: Request, res: Response): Promise<Respons
 
 export async function completeSchedule(req: Request, res: Response): Promise<Response> {
     const { schedule_id, complete } = req.body;
+    console.log(schedule_id, complete)
 
     try {
         const mysql = await MySQL()

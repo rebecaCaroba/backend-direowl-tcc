@@ -113,7 +113,7 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
                 catalogs.user_id = ?
         `
 
-        if (search !== 'show') {
+        if (search) {
             query += ` AND (catalogs.name LIKE ? OR books.title LIKE ? OR books.author LIKE ?)`;
 
             const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser,
