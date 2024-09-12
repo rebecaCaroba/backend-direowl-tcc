@@ -98,3 +98,35 @@ export async function getBook(req: Request, res: Response): Promise<Response> {
         })
     }
 }
+
+export async function deleteBook(req: Request, res: Response): Promise<Response> {
+    const { bookId } = req.params;
+
+    try {
+        const mysql = await MySQL()
+
+        const query = 'DELETE FROM books WHERE id = ?'
+        const [result]: [ResultSetHeader & BookType[], FieldPacket[]] = await mysql.execute(query, [bookId])
+
+        await mysql.end()
+
+        if(result.length < 0) {
+            return res.status(409).json({
+                message: 'Livro deletado com sucesso',
+                error: false,
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Livro deletado com sucesso',
+            error: false,
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu algum erro ao deletar o livro :(',
+            error: true,
+            err
+        })
+    }
+}

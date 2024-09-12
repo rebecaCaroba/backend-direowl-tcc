@@ -27,6 +27,7 @@ router.delete('/delete-catalog/:catalogId', middlewareUser.validateToken, contro
 // Livros
 router.post('/add-book', middlewareUser.validateToken, middlewareBook.verifyBook, controllerBooks.addBook )
 router.get('/get-book/:bookId', controllerBooks.getBook)
+router.delete('/delete-book/:bookId', controllerBooks.deleteBook)
 
 // Cronogrâma
 router.post('/create-schedule', middlewareUser.validateToken, controllerSchedule.createSchedule)
