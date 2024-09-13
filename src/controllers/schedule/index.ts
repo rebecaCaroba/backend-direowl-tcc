@@ -183,7 +183,6 @@ export async function completedDay(req: Request, res: Response): Promise<Respons
 
 export async function completeSchedule(req: Request, res: Response): Promise<Response> {
     const { schedule_id, complete } = req.body;
-    console.log(schedule_id, complete)
 
     try {
         const mysql = await MySQL()
@@ -202,7 +201,7 @@ export async function completeSchedule(req: Request, res: Response): Promise<Res
         }
 
         return res.status(201).json({
-            message: "Cronograma concluído com sucesso.",
+            message: "Parabéns! Você concluir o cronograma :D",
             error: false,
             result
         })
@@ -227,7 +226,6 @@ export async function getAllSchedule(req: Request, res: Response): Promise<Respo
         SELECT 
             schedule.id AS schedule_id,
             schedule.user_id,
-            schedule.created_at,
             schedule.complete,
             books.id AS book_id,
             books.title AS book_title,

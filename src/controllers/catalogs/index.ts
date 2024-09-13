@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import { MySQL } from '../../services/connection';
 import { FieldPacket, ResultSetHeader } from 'mysql2';
 import { getIdUserToken } from '../../middleware';
-import { error } from 'console';
 
 interface CatalogType {
     user_id: number,

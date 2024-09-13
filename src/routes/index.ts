@@ -35,7 +35,7 @@ router.post('/create-dayRead', controllerSchedule.CreateDayRead)
 router.get('/get-schedule/:bookId', middlewareUser.validateToken, controllerSchedule.getSchedule)
 router.get('/get-all-schedule', middlewareUser.validateToken, controllerSchedule.getAllSchedule)
 router.patch('/completed-day', middlewareUser.validateToken, controllerSchedule.completedDay)
-router.put('/completed-schedule', middlewareUser.validateToken, controllerSchedule.completedDay)
+router.put('/completed-schedule', middlewareUser.validateToken, controllerSchedule.completeSchedule)
 router.post('/put-day-read', controllerCatalog.PutDayRead)
 
 
