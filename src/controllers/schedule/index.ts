@@ -53,6 +53,35 @@ export async function createSchedule(req: Request, res: Response): Promise<Respo
     }
 }
 
+export async function deleteSchedule(req: Request, res: Response): Promise<Response> {
+    const { scheduleId } = req.params
+
+    const idUser = await getIdUserToken(req)
+
+    try {
+        const mysql = await MySQL()
+
+        const query = "DELETE from schedule WHERE id = ? AND user_id = ?"
+
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [scheduleId, idUser])
+
+        await mysql.end()
+
+        return res.status(201).json({
+            message: "Cronograma deletado com sucesso",
+            error: false,
+            result
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao deletar o cronograma :(',
+            error: true,
+            err
+        })
+    }
+}
+
 export async function getSchedule(req: Request, res: Response): Promise<Response> {
     const { bookId } = req.params;
 
@@ -266,6 +295,7 @@ export async function getAllSchedule(req: Request, res: Response): Promise<Respo
         })
     }
 }
+
 
 
 

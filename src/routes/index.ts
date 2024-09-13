@@ -37,6 +37,7 @@ router.get('/get-all-schedule', middlewareUser.validateToken, controllerSchedule
 router.patch('/completed-day', middlewareUser.validateToken, controllerSchedule.completedDay)
 router.put('/completed-schedule', middlewareUser.validateToken, controllerSchedule.completeSchedule)
 router.post('/put-day-read', controllerCatalog.PutDayRead)
+router.delete('/delete-schedule/:scheduleId', middlewareUser.validateToken, controllerSchedule.deleteSchedule)
 
 
 export { router }
