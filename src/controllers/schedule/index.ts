@@ -70,8 +70,8 @@ export async function deleteSchedule(req: Request, res: Response): Promise<Respo
         return res.status(201).json({
             message: "Cronograma deletado com sucesso",
             error: false,
-            result
-        });
+
+        })
 
     } catch (err) {
         return res.status(500).json({

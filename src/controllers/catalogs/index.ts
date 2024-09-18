@@ -115,13 +115,13 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
         if (search) {
             query += ` AND (catalogs.name LIKE ? OR books.title LIKE ? OR books.author LIKE ?)`;
 
-            const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser,
+            const [result]: [ResultSetHeader[], FieldPacket[]] = await mysql.execute(query, [idUser,
                 `%${search}%`, `%${search}%`, `%${search}%`]
             )
 
             await mysql.end()
 
-            if(!result) {
+            if (result.length < 0) {
                 return res.status(201).json({
                     message: "Parece que não tem nada aqui",
                     error: true,
@@ -135,15 +135,21 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
             });
         }
 
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [idUser])
+        const [result]: [ResultSetHeader[], FieldPacket[]] = await mysql.execute(query, [idUser])
 
         await mysql.end()
 
+        if(result.length < 0) {
+            return res.status(201).json({
+            message: "Parece que não tem nada aqui.",
+            error: false,
+        })
+        }
+
         return res.status(201).json({
-            message: "Catálogos obtidos com sucesso.",
             error: false,
             result
-        });
+        })
 
     } catch (err) {
         return res.status(500).json({
@@ -219,11 +225,11 @@ export async function deleteCatalog(req: Request, res: Response): Promise<Respon
 
         const query = `DELETE FROM catalogs WHERE id = ?`
 
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [catalogId])
+        const [result]: [ResultSetHeader[], FieldPacket[]] = await mysql.execute(query, [catalogId])
 
         await mysql.end()
 
-        if(!result) {
+        if (result.length < 0) {
             return res.status(201).json({
                 message: 'Erro ao deletar o catálogo',
                 error: true,
