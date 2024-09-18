@@ -3,6 +3,7 @@ import * as controllerUser from '../controllers/user'
 import * as controllerCatalog from '../controllers/catalogs'
 import * as controllerBooks from '../controllers/books'
 import * as controllerSchedule from '../controllers/schedule'
+import * as controllerNotes from '../controllers/notes'
 import * as middlewareUser from '../middleware'
 import * as middlewareBook from '../middleware/books'
 
@@ -38,6 +39,11 @@ router.patch('/completed-day', middlewareUser.validateToken, controllerSchedule.
 router.put('/completed-schedule', middlewareUser.validateToken, controllerSchedule.completeSchedule)
 router.post('/put-day-read', controllerCatalog.PutDayRead)
 router.delete('/delete-schedule/:scheduleId', middlewareUser.validateToken, controllerSchedule.deleteSchedule)
+
+// Notas
+router.post('/add-notes', middlewareUser.validateToken, controllerNotes.addNotes)
+router.get('/get-notes/:bookId', middlewareUser.validateToken, controllerNotes.getNotes)
+router.delete('/delete-notes/:notesId', middlewareUser.validateToken, controllerNotes.deleteNotes)
 
 
 export { router }
