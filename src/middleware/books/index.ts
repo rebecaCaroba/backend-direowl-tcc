@@ -4,6 +4,7 @@ import { FieldPacket, ResultSetHeader } from 'mysql2';
 
 interface ReqType {
     book: {
+        idResBook: string
         title: string,
         authors: string[],
         publisher: string,
@@ -34,9 +35,9 @@ export async function verifyBook(req: Request, res: Response, next: NextFunction
     try {
         const mysql = await MySQL()
 
-        const query = 'SELECT * FROM books WHERE isbn = ? AND catalog_id = ?'
+        const query = 'SELECT * FROM books WHERE idResBook = ? AND catalog_id = ?'
 
-        const [result]: [ResultSetHeader & BookType[], FieldPacket[]] = await mysql.execute(query, [book.isbn, CatalogSelect])
+        const [result]: [ResultSetHeader & BookType[], FieldPacket[]] = await mysql.execute(query, [book.idResBook, CatalogSelect])
 
         mysql.end()
 

@@ -4,6 +4,7 @@ import { FieldPacket, ResultSetHeader } from 'mysql2';
 
 interface ReqType {
     book: {
+        idResBook: string
         title: string,
         authors: string[],
         publisher: string,
@@ -21,7 +22,7 @@ interface BookType {
     title: string,
     author: string[],
     publisher: string,
-    publishedDate: string,
+    publication_date: string,
     pages: number,
     description: string,
     imageLinks: string,
@@ -30,12 +31,14 @@ interface BookType {
 
 export async function addBook(req: Request, res: Response): Promise<Response> {
     const { book, CatalogSelect }: ReqType = req.body;
+
     try {
         const mysql = await MySQL()
 
-        const query = 'INSERT INTO books (catalog_id, title, author, isbn, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        const query = 'INSERT INTO books (catalog_id, idResBook, title, author, isbn, publisher, publication_date, pages, description, imageLinks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         const [result] = await mysql.execute(query, [
             CatalogSelect,
+            book.idResBook,
             book.title,
             book.authors.join(', '),
             book.isbn,
@@ -82,9 +85,10 @@ export async function getBook(req: Request, res: Response): Promise<Response> {
                 title: result[0].title,
                 author: result[0].author,
                 publisher: result[0].publisher,
-                publishedDate: result[0].publishedDate,
                 pages: result[0].pages,
                 description: result[0].description,
+                isbn: result[0].isbn,
+                publishedDate: result[0].publication_date,
                 imageLinks: result[0].imageLinks,
             },
         })
