@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { MySQL } from '../../services/connection';
 import { FieldPacket, ResultSetHeader } from 'mysql2';
 import { text } from 'stream/consumers';
+import { getIdUserToken } from '../../middleware';
 
 interface NoteType {
     id: number
@@ -11,13 +12,14 @@ interface NoteType {
 }    
 
 export async function addNotes(req: Request, res: Response): Promise<Response> {
-    const { text, bookId } = req.body;
+    const { text, bookId } = req.body
+    const idUser = await getIdUserToken(req)
 
     try {
         const mysql = await MySQL()
 
-        const query = 'INSERT INTO notes (book_id, text) VALUES (?, ?)'
-        const [result]: [ResultSetHeader & NoteType[], FieldPacket[]]  = await mysql.execute(query, [bookId, text])
+        const query = 'INSERT INTO notes (book_id, user_id, text) VALUES (?, ?, ?)'
+        const [result]: [ResultSetHeader & NoteType[], FieldPacket[]]  = await mysql.execute(query, [bookId,idUser, text])
 
         await mysql.end()
 
@@ -46,12 +48,13 @@ export async function addNotes(req: Request, res: Response): Promise<Response> {
 
 export async function getNotes(req: Request, res: Response): Promise<Response> {
     const { bookId } = req.params;
+    const idUser = await getIdUserToken(req)
 
     try {
         const mysql = await MySQL()
 
-        const query = 'SELECT * FROM notes WHERE book_id = ?'
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [bookId])
+        const query = 'SELECT * FROM notes WHERE book_id = ? AND user_id =?'
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [bookId, idUser])
 
         await mysql.end()
 
