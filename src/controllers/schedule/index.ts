@@ -119,9 +119,10 @@ export async function getSchedule(req: Request, res: Response): Promise<Response
         await mysql.end()
 
         if (result.length <= 0) {
-            return res.status(501).json({
+            return res.status(201).json({
                 message: "Nenhum cronogrâma encontrado.",
                 error: true,
+                result,
             })
         }
 

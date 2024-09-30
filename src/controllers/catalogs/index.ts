@@ -113,7 +113,7 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
         `
 
         if (search) {
-            query += ` AND (catalogs.name LIKE ? OR books.title LIKE ? OR books.author LIKE ?)`;
+            query += ` AND (catalogs.name LIKE ? OR books.title LIKE ? OR books.author LIKE ? OR books.isbn LIKE ?)`;
 
             const [result]: [ResultSetHeader[], FieldPacket[]] = await mysql.execute(query, [idUser,
                 `%${search}%`, `%${search}%`, `%${search}%`]
@@ -121,7 +121,7 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
 
             await mysql.end()
 
-            if (result.length < 0) {
+            if (result.length <= 0) {
                 return res.status(201).json({
                     message: "Parece que não tem nada aqui",
                     error: true,
@@ -141,7 +141,6 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
 
         if(result.length < 0) {
             return res.status(201).json({
-            message: "Parece que não tem nada aqui.",
             error: false,
         })
         }
