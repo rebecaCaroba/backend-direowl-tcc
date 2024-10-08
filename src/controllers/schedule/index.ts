@@ -231,7 +231,7 @@ export async function completeSchedule(req: Request, res: Response): Promise<Res
         }
 
         return res.status(201).json({
-            message: "Parabéns! Você concluir o cronograma :D",
+            message: "Parabéns! Você concluiu o cronograma :D",
             error: false,
             result
         })
