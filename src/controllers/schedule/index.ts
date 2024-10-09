@@ -21,9 +21,9 @@ export async function createSchedule(req: Request, res: Response): Promise<Respo
     try {
         const mysql = await MySQL()
 
-        const query = `INSERT INTO schedule (book_id, user_id, total_days, total_minutes, minutes_per_day, total_pages) VALUES (?, ?, ?, ?, ?, ?)`
+        const query = `INSERT INTO schedule (book_id, user_id, total_days, total_minutes, minutes_per_day, total_pages, complete) VALUES (?, ?, ?, ?, ?, ?, ?)`
 
-        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [bookIdNumber, idUser, daysToRead, totalMinutes, minutesDay, amoutPags])
+        const [result]: [ResultSetHeader, FieldPacket[]] = await mysql.execute(query, [bookIdNumber, idUser, daysToRead, totalMinutes, minutesDay, amoutPags, false])
 
         await mysql.end()
 
