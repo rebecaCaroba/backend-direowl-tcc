@@ -223,3 +223,36 @@ export async function updatePassword(req: Request, res: Response): Promise<Respo
         })
     }
 }
+
+export async function deleteUser(req: Request, res: Response): Promise<Response> {
+    const idUser = await getIdUserToken(req)
+
+    try {
+        const mysql = await MySQL()
+
+        const query = `DELETE FROM users WHERE id = ?`
+
+        const [result]: [ResultSetHeader[], FieldPacket[]] = await mysql.execute(query, [idUser])
+
+        await mysql.end()
+
+        if (result.length < 0) {
+            return res.status(201).json({
+                message: 'Erro ao deletar o usuário',
+                error: true,
+            })
+        }
+
+        return res.status(201).json({
+            message: 'Usuário deletado com sucesso',
+            error: false,
+        })
+
+    } catch (err) {
+        return res.status(500).json({
+            message: 'Ocorreu um erro ao deletar sua conta :(',
+            error: true,
+            err
+        })
+    }
+}
