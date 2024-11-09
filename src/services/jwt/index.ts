@@ -1,4 +1,6 @@
+require('dotenv').config()
+
 export const config = {
-    secret: 'diredir=odoweoi1038kapkc2kc9b0-12kap',
+    secret: String(process.env.SECRET_JWT),
     expireIn: 3600 * 60
 }
