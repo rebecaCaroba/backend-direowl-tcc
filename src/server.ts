@@ -7,4 +7,4 @@ server.use(cors());
 server.use(express.json())
 server.use('/api', router)
 
-server.listen(3333, () => console.log('Rodando...'))
+server.listen(process.env.PORT ? Number(process.env.PORT) : 3333, () => console.log('Rodando...'))

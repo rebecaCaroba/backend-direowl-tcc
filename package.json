@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "19",
+    "jsonwebtoken": "9.0.2",
+    "mysql2": "3.10.0"
+  },
   "scripts": {
     "start": "node dist/server.js",
     "build": "rimraf ./dist && tsc",
