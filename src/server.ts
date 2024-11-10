@@ -7,4 +7,7 @@ server.use(cors());
 server.use(express.json())
 server.use('/api', router)
 
-server.listen(process.env.PORT ? Number(process.env.PORT) : 3333, () => console.log('Rodando...'))
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3333;
+const HOST = '0.0.0.0';
+
+server.listen(PORT, HOST, () => console.log('Rodando...'))
