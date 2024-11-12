@@ -62,14 +62,14 @@ export async function register(req: Request, res: Response): Promise<Response> {
 
     try {
         const mysql = await MySQL()
-        const checkQuery = `SELECT * FROM users WHERE email = ? OR name = ?`
-        const [userExist]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(checkQuery, [email, username])
+        const checkQuery = `SELECT * FROM users WHERE email = ?`
+        const [userExist]: [ResultSetHeader & UserType[], FieldPacket[]] = await mysql.execute(checkQuery, [email])
 
         if (userExist.length > 0) {
             await mysql.end()
 
             return res.status(409).json({
-                message: 'O nome de usuário ou e-mail já está em uso',
+                message: 'O e-mail já está em uso',
                 error: true 
             })
         }

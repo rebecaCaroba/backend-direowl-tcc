@@ -7,7 +7,7 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
     const tokenBearer = req.headers['authorization']
 
     if (!tokenBearer) {
-        return res.status(406).json({
+        return res.status(401).json({
             error: true,
             message: 'Não autorizado'
         });
@@ -24,7 +24,7 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
         await mysql.end()
         
         if (!(result.length > 0)) {
-            return res.status(406).json({
+            return res.status(401).json({
                 error: true,
                 message: 'O token está inválido'
             })
@@ -32,7 +32,7 @@ export async function validateToken(req: Request, res: Response, next: NextFunct
 
         next();
     } catch (err) {
-        return res.status(406).json({
+        return res.status(401).json({
             error: true,
             message: 'O token está inválido'
         });
