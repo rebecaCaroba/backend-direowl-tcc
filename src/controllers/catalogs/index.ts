@@ -101,7 +101,8 @@ export async function getCatalogAndBooks(req: Request, res: Response): Promise<R
                 catalogs.id AS catalog_id,
                 catalogs.name AS catalog_name,
                 books.imageLinks AS book_image,
-                books.id AS book_id
+                books.id AS book_id,
+                books.title AS book_title
             FROM 
                 catalogs
             INNER JOIN 
